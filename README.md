@@ -30,18 +30,13 @@ This is Layton's UI, built inspired by existing SIEM tools:
 ---
 ![ArquitecturaLayton](https://github.com/user-attachments/assets/03b01cf5-fab3-4c49-8700-18017fba9070)
 
----
-
-## Build Requirements
-
----
-
 
 ## Model & Dataset
 
-Layton uses an **XGBoost binary classifier** trained on the **CIC-BCCC-TabularIoT-2024 dataset**, specifically designed for IoT network traffic analysis. The model achieves:
+Layton uses two **XGBoost classifiers** trained on the **CIC-BCCC-TabularIoT-2024 dataset**, specifically designed for IoT network traffic analysis. The model achieves:
 
-- **High accuracy** in distinguishing benign vs malicious flows
+- **High accuracy** (91.65%) in distinguishing benign vs malicious flows
+- **High accuracy** (95.65%) in distinguishing between 9 attack patterns (DoS, DDoS, MQTT, Mirai, MITM, Scanning, Other)
 - **Low latency** inference suitable for real-time processing  
 - **Compact size** when exported to ONNX format
 
