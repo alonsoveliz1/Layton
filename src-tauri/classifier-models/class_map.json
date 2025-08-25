@@ -1,0 +1,25 @@
+{
+  "num_classes": 9,
+  "id_to_label": {
+    "0": "Application",
+    "1": "Brute Force",
+    "2": "DDoS",
+    "3": "DoS",
+    "4": "MQTT",
+    "5": "Mirai",
+    "6": "Mitm",
+    "7": "Other",
+    "8": "Scanning"
+  },
+  "label_to_id": {
+    "Application": 0,
+    "Brute Force": 1,
+    "DDoS": 2,
+    "DoS": 3,
+    "MQTT": 4,
+    "Mirai": 5,
+    "Mitm": 6,
+    "Other": 7,
+    "Scanning": 8
+  }
+}

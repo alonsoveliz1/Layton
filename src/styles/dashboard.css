@@ -1,0 +1,317 @@
+/* ================================================
+   DASHBOARD.CSS - RETRO TERMINAL THEME
+   Dashboard-specific styles
+   ================================================ */
+
+/* ================================================
+   DASHBOARD CONTAINER
+   ================================================ */
+.dashboard-container {
+  padding: var(--spacing-lg);
+  min-height: calc(100vh - 80px);
+  background: var(--color-background);
+  position: relative;
+}
+
+/* Terminal grid background pattern */
+.dashboard-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 50px,
+      var(--terminal-amber-faint) 50px,
+      var(--terminal-amber-faint) 50.5px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 50px,
+      var(--terminal-amber-faint) 50px,
+      var(--terminal-amber-faint) 50.5px
+    );
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.dashboard-container--compact {
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+/* ================================================
+   DASHBOARD HEADER
+   ================================================ */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px dashed var(--terminal-amber-faint);
+}
+
+.dashboard-title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--terminal-amber-bright);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-shadow: var(--phosphor-glow);
+}
+
+/* ================================================
+   KPI GRID
+   ================================================ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* ================================================
+   KPI CARDS
+   ================================================ */
+.kpi-card {
+  --kpi-color: var(--terminal-amber);
+  
+  position: relative;
+  background: var(--color-surface);
+  border: 2px solid var(--kpi-color);
+  padding: var(--spacing-md);
+  overflow: hidden;
+}
+
+/* Terminal window decoration */
+.kpi-card::before {
+  content: "━━━━━━━━━━";
+  position: absolute;
+  top: 2px;
+  left: var(--spacing-sm);
+  font-size: 10px;
+  color: var(--kpi-color);
+  opacity: 0.3;
+  letter-spacing: -1px;
+}
+
+/* Corner brackets for active cards */
+.kpi-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid var(--kpi-color);
+  border-right: 2px solid var(--kpi-color);
+}
+
+/* Hover state */
+.kpi-card:hover:not(.kpi-card--off) {
+  background: var(--color-surface-elevated);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 0 rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(255, 176, 0, 0.05);
+}
+
+.kpi-card:hover:not(.kpi-card--off)::before {
+  opacity: 0.6;
+}
+
+/* Off state */
+.kpi-card--off {
+  border-style: dashed;
+  opacity: 0.5;
+}
+
+.kpi-card--off .kpi-value,
+.kpi-card--off .kpi-label {
+  color: var(--kpi-off);
+  text-shadow: none;
+}
+
+/* ================================================
+   KPI CONTENT
+   ================================================ */
+.kpi-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+  z-index: 1;
+}
+
+.kpi-label {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--kpi-color);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+
+.kpi-value-container {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-xs);
+  position: relative;
+  z-index: 1;
+}
+
+.kpi-value {
+  font-family: var(--font-family-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--kpi-color);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-shadow: 
+    0 0 2px var(--kpi-color),
+    0 0 4px rgba(255, 176, 0, 0.3);
+}
+
+.kpi-unit {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-sm);
+  color: var(--kpi-color);
+  opacity: 0.6;
+  font-weight: 500;
+}
+
+/* ================================================
+   KPI COLOR VARIANTS
+   ================================================ */
+/* Active Flows - Primary */
+.kpi-card[style*="--kpi-color: var(--color-accent)"] {
+  border-color: var(--terminal-amber);
+}
+
+.kpi-card[style*="--kpi-color: var(--color-accent)"] .kpi-label,
+.kpi-card[style*="--kpi-color: var(--color-accent)"] .kpi-value {
+  color: var(--terminal-amber);
+}
+
+/* Packet Rate - Secondary */
+.kpi-card[style*="--kpi-color: var(--color-secondary)"] {
+  border-color: var(--color-secondary);
+}
+
+.kpi-card[style*="--kpi-color: var(--color-secondary)"] .kpi-label,
+.kpi-card[style*="--kpi-color: var(--color-secondary)"] .kpi-value {
+  color: var(--color-secondary);
+}
+
+/* Bandwidth - Success */
+.kpi-card[style*="--kpi-color: var(--color-success)"] {
+  border-color: var(--color-success);
+}
+
+.kpi-card[style*="--kpi-color: var(--color-success)"] .kpi-label,
+.kpi-card[style*="--kpi-color: var(--color-success)"] .kpi-value {
+  color: var(--color-success);
+  text-shadow: 
+    0 0 2px var(--color-success),
+    0 0 4px rgba(0, 255, 136, 0.3);
+}
+
+/* Total Packets - Warning */
+.kpi-card[style*="--kpi-color: var(--color-warning)"] {
+  border-color: var(--color-warning);
+}
+
+.kpi-card[style*="--kpi-color: var(--color-warning)"] .kpi-label,
+.kpi-card[style*="--kpi-color: var(--color-warning)"] .kpi-value {
+  color: var(--color-warning);
+}
+
+/* Total Data - Danger */
+.kpi-card[style*="--kpi-color: var(--color-danger)"] {
+  border-color: var(--color-danger);
+}
+
+.kpi-card[style*="--kpi-color: var(--color-danger)"] .kpi-label,
+.kpi-card[style*="--kpi-color: var(--color-danger)"] .kpi-value {
+  color: var(--color-danger);
+  text-shadow: 
+    0 0 2px var(--color-danger),
+    0 0 4px rgba(255, 51, 102, 0.3);
+}
+
+
+
+/* ================================================
+   RESPONSIVE DESIGN
+   ================================================ */
+@media (max-width: 1200px) {
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: var(--spacing-md);
+  }
+  
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-sm);
+  }
+  
+  .kpi-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .kpi-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .kpi-value {
+    font-size: 1.25rem;
+  }
+  
+  .dashboard-title {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* ================================================
+   LOADING STATES
+   ================================================ */
+.kpi-card.loading .kpi-value::after {
+  content: "_";
+  animation: cursor-blink 0.5s infinite;
+}
+
+/* ================================================
+   PRINT STYLES
+   ================================================ */
+@media print {
+  .dashboard-container::before {
+    display: none;
+  }
+  
+  .kpi-card {
+    border: 1px solid #000;
+    animation: none;
+  }
+  
+  .kpi-value {
+    text-shadow: none;
+  }
+}

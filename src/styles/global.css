@@ -1,0 +1,234 @@
+/* ================================================
+   GLOBAL.CSS - RETRO TERMINAL THEME
+   Base styles and design system variables
+   ================================================ */
+
+/* Font Import - Classic terminal fonts */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+/* ================================================
+   DESIGN SYSTEM VARIABLES
+   ================================================ */
+:root {
+  /* === TERMINAL COLOR PALETTE === */
+  /* Classic amber phosphor terminal */
+  --terminal-bg: #0a0400;
+  --terminal-amber: #ffb000;
+  --terminal-amber-bright: #ffd000;
+  --terminal-amber-dim: #cc8800;
+  --terminal-amber-faint: #805500;
+  
+  /* Alternative: Green phosphor 
+  --terminal-bg: #001100;
+  --terminal-amber: #00ff00;
+  --terminal-amber-bright: #33ff33;
+  --terminal-amber-dim: #00cc00;
+  --terminal-amber-faint: #008800;
+  */
+  
+  /* === CORE COLORS === */
+  --color-background: var(--terminal-bg);
+  --color-surface: #0f0a05;
+  --color-surface-elevated: #1a1409;
+  --color-border: var(--terminal-amber-faint);
+  
+  /* === TEXT COLORS === */
+  --color-text: var(--terminal-amber);
+  --color-text-bright: var(--terminal-amber-bright);
+  --color-text-secondary: var(--terminal-amber-dim);
+  --color-text-muted: var(--terminal-amber-faint);
+  
+  /* === SEMANTIC COLORS === */
+  --color-accent: var(--terminal-amber);
+  --color-secondary: #ff6b00;
+  --color-success: #00ff88;
+  --color-warning: #ffaa00;
+  --color-danger: #ff3366;
+  --color-info: #00bbff;
+  
+  /* === KPI OFF STATE === */
+  --kpi-off: #333333;
+  
+  /* === SPACING === */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* === TYPOGRAPHY === */
+  --font-family-mono: 'JetBrains Mono', 'Share Tech Mono', 'Courier New', monospace;
+  --font-family-display: 'JetBrains Mono', monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  
+  /* === BORDERS === */
+  --border-width: 1px;
+  --border-radius-sm: 0;
+  --border-radius-md: 2px;
+  --border-radius-lg: 3px;
+  
+  /* === EFFECTS === */
+  --phosphor-glow: 0 0 2px var(--terminal-amber);
+  --scanline-opacity: 0.015;
+  --transition-fast: 100ms linear;
+  --transition-base: 150ms linear;
+  
+  /* === Z-INDEX === */
+  --modal-z-index: 1000;
+  --scanline-z-index: 10000;
+}
+
+/* ================================================
+   BASE RESET & SETUP
+   ================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-background);
+  
+  /* Subtle phosphor glow on text */
+  text-shadow: 0 0 1px var(--terminal-amber);
+  
+  /* Disable font smoothing for authentic terminal look */
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: auto;
+}
+
+/* CRT Scanline Effect (Very Subtle) */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, var(--scanline-opacity)) 2px,
+    rgba(255, 255, 255, var(--scanline-opacity)) 3px
+  );
+  pointer-events: none;
+  z-index: var(--scanline-z-index);
+}
+
+/* ================================================
+   ROOT CONTAINER
+   ================================================ */
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ================================================
+   TYPOGRAPHY
+   ================================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-text-bright);
+  text-transform: uppercase;
+}
+
+h1 { font-size: var(--font-size-xl); }
+h2 { font-size: var(--font-size-lg); }
+h3 { font-size: var(--font-size-base); }
+
+/* ================================================
+   FOCUS STATES
+   ================================================ */
+:focus-visible {
+  outline: 1px solid var(--terminal-amber);
+  outline-offset: 2px;
+}
+
+/* ================================================
+   SELECTION
+   ================================================ */
+::selection {
+  background-color: var(--terminal-amber);
+  color: var(--color-background);
+}
+
+/* ================================================
+   SCROLLBAR
+   ================================================ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+  border: 1px solid var(--terminal-amber-faint);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--terminal-amber-dim);
+  border: 1px solid var(--terminal-amber-faint);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--terminal-amber);
+}
+
+/* ================================================
+   UTILITY CLASSES
+   ================================================ */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-muted { 
+  color: var(--terminal-amber-faint);
+  text-shadow: none;
+}
+.text-bright { color: var(--color-text-bright); }
+.hidden { display: none !important; }
+
+/* Terminal cursor blink */
+.cursor::after {
+  content: "_";
+  animation: cursor-blink 1s infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Loading states */
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* ================================================
+   LAYOUT UTILITIES
+   ================================================ */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
