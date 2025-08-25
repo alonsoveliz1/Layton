@@ -4,6 +4,9 @@ Today I present you Layton, my bachelor's thesis (in progress). It's a **novel**
 
 Powered by Tauri, Layton captures packets using pcap, extracts flow features mimicking **CIC-FlowMeter**, and uses two trained **XGBoost models** (exported to ONNX) for flow classification. The first model distinguish between **benign or malicious** and the second one between 9 attack categories — all in one lightweight pipeline. 
 
+It's a project I will keep working on for sure. Mostly for fun, but, who knows, maybe someday it really turns into something usefull!. Even if it's not realiable yet, building Layton helped me exploring some cool technologies that weren't really seen in the Degree I coursed.
+
+This is Layton's UI, built inspired by existing SIEM tools:
 <img width="1387" height="902" alt="FuncionamientoLayton" src="https://github.com/user-attachments/assets/2e756fe8-1a62-45d4-9807-418199ba483c" />
 
 ---
@@ -14,18 +17,18 @@ Powered by Tauri, Layton captures packets using pcap, extracts flow features mim
 - Multithreaded architecture for optimal performance
 - Flow extraction & feature engineering (CIC-FlowMeter-style)
 - XGBoost-based binary and multiclass classification.
-![ArquitecturaLayton](https://github.com/user-attachments/assets/03b01cf5-fab3-4c49-8700-18017fba9070)
-<img width="669" height="813" alt="DiagramaLayton" src="https://github.com/user-attachments/assets/e12e6fde-0c25-48bc-85f7-6f74413fc349" />
 
 ---
 
-## How It Works
-
+## How It Works 
 1. **Sniffing** — Captures live packets from the selected interface. 
 2. **Flow Aggregation** — Groups packets into bidirectional flows, storing them in a HashMap where their features are updated while the flows are alive.
 3. **Feature Extraction** — Computes statistical features per flow (duration, packet size, flags, etc.).
 4. **Classification** — When flows are finished (a TCP closing sequence is registered or the flow expired) classification is done by ONNX. Features given to inference are the ones the model expect (from the training phase).
 5. **Output** — Labels each flow.
+
+---
+![ArquitecturaLayton](https://github.com/user-attachments/assets/03b01cf5-fab3-4c49-8700-18017fba9070)
 
 ---
 
