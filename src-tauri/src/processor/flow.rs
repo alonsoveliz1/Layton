@@ -523,11 +523,11 @@ impl FlowRecord {
             match direction {
                 FlowDirection::Forward => {
                     if self.last_fwd_packet_timestamp > 0 {
-                        let fwd_iat = timestamp - self.last_fwd_packet_timestamp;
+                        let fwd_iat = timestamp.saturating_sub(self.last_fwd_packet_timestamp);
                         self.fwd_iat_total += fwd_iat;
                         
-                        self.fwd_iat_min = self.fwd_iat_min.min(flow_iat);
-                        self.fwd_iat_max = self.fwd_iat_max.min(flow_iat);
+                        self.fwd_iat_min = self.fwd_iat_min.min(fwd_iat);
+                        self.fwd_iat_max = self.fwd_iat_max.min(fwd_iat);
                         
                         let n_fwd = self.total_fwd_packets as f64;
                         if n_fwd > 1.0 {
@@ -545,7 +545,7 @@ impl FlowRecord {
                 }
                 FlowDirection::Backward => {
                     if self.last_bwd_packet_timestamp > 0 {
-                        let bwd_iat = timestamp - self.last_bwd_packet_timestamp;
+                        let bwd_iat = timestamp.saturating_sub(self.last_bwd_packet_timestamp);
                         self.bwd_iat_total += bwd_iat;
                         
                         self.bwd_iat_min = self.bwd_iat_min.min(flow_iat);
@@ -580,19 +580,19 @@ impl FlowRecord {
     /// Update Active/Idle time features according to CICFlowMeter rules
     fn update_active_idle_stats(&mut self, timestamp: u64) {
         if self.total_packets > 1 {
-            let time_since_last = timestamp - self.last_activity_time;
+            let time_since_last = timestamp.saturating_sub(self.last_activity_time);
             
             if time_since_last > ACTIVITY_TIMEOUT_US {
                 // Transition from active to idle
                 if self.is_in_active_period {
-                    let active_duration = self.last_activity_time - self.current_active_start;
+                    let active_duration = self.last_activity_time.saturating_sub(self.current_active_start);
                     self.update_active_time_stats(active_duration);
                     self.current_idle_start = self.last_activity_time;
                     self.is_in_active_period = false;
                 }
                 
                 // We're in idle period
-                let idle_duration = timestamp - self.current_idle_start;
+                let idle_duration = timestamp.saturating_sub(self.current_idle_start);
                 // Don't update idle stats yet - wait for next active period
             } else {
                 // Still active or transition from idle to active
@@ -612,8 +612,8 @@ impl FlowRecord {
         self.active_counts += 1;
         self.active_time_tot += duration;
         
-        self.active_min.min(duration);
-        self.active_max.max(duration);
+        self.active_min = self.active_min.min(duration);
+        self.active_max = self.active_max.max(duration);
         
         let n = self.active_counts as f64;
         let delta = duration as f64 - self.active_mean;
