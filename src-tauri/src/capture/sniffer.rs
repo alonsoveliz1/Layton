@@ -1,17 +1,14 @@
 use pcap::{Active, Capture, PacketHeader};
-use serde::{Deserialize, Serialize};
+use serde::{Serialize};
 use std::error::Error;
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    Arc,
-};
+use std::sync::{atomic::{AtomicBool, Ordering}, Arc};
 use std::thread::{self, JoinHandle};
 use crossbeam_channel::Sender;
 use etherparse::{NetHeaders, PacketHeaders, TransportHeader};
 
 use crate::processor::FlowKey;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct NetworkInterface {
     pub name: String,
     pub description: String,
@@ -62,7 +59,7 @@ impl PacketSniffer {
     }
 
     pub fn start_sniffer(&mut self) -> Result<(), Box<dyn Error>> {
-        let mut cap = self
+        let cap = self
             .capture
             .take()
             .ok_or("Capture is not initialized. Call init_sniffer first")?;
@@ -94,30 +91,37 @@ impl PacketSniffer {
         Ok(())
     }
 
+
+
     pub fn stop_sniffer(&mut self) -> Result<(), Box<dyn Error>> {
         if !self.sniffer_running.swap(false, Ordering::Relaxed) {
             return Ok(());
         }
+
         if let Some(handle) = self.sniffer_thread.take() {
             let _ = handle.join();
         }
+
         // If start succeeded, capture is already moved. If not, drop it now.
         self.capture = None;
         println!("Sniffer stopped");
         Ok(())
     }
 
+
+
     fn packet_handler(header: &PacketHeader, packet_data: &[u8], sender: &Sender<ParsedPacket>) {
         match Self::parse_packet(header, packet_data) {
             Ok(parsed_packet) => {
-                // If using a bounded channel, this will drop when full (non-blocking).
+                // If can parse the packet we send it to the engine
                 let _ = sender.try_send(parsed_packet);
             }
             Err(_) => {
-                // Parse error — ignore or debug-log if needed
             }
         }
     }
+
+    
 
     fn parse_packet(header: &PacketHeader, data: &[u8]) -> Result<ParsedPacket, Box<dyn Error>> {
         let timestamp = (header.ts.tv_sec as u64 * 1_000_000) + header.ts.tv_usec as u64;
