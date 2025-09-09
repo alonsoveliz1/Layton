@@ -146,10 +146,13 @@ fn start_system(interface: &str, state: State<AppState>, app_handle: tauri::AppH
         let rx = classifier.rx.clone();           
         let app = app_handle.clone();
         let labels = labels.clone();
-
+        
         std::thread::spawn(move || {
+            let mut num_alerts: i128 = 0;
+
             while let Ok((flow, res)) = rx.recv() {
                 let is_attack = res.bin.pred_label == 1;
+                if is_attack {num_alerts += 1;}
                 let p_attack = res.bin.probs.get(1).copied().unwrap_or(0.0);
 
                 let (multi_class, multi_label, multi_probs) = if let Some(m) = res.multi {
@@ -173,7 +176,8 @@ fn start_system(interface: &str, state: State<AppState>, app_handle: tauri::AppH
                     multi_label,
                     multi_probs,
                 };
-
+                
+                let _ = app.emit("num_alerts", num_alerts);
                 // Nombre del evento Tauri para el frontend:
                 let _ = app.emit("flow_classified", payload);
             }
