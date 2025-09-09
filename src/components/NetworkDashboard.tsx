@@ -4,6 +4,7 @@ import type { Event, UnlistenFn } from '@tauri-apps/api/event';
 import type { NetworkStats } from '../types/network.types';
 import { FlowStream } from "./FlowStream";
 
+
 interface NetworkDashboardProps {
   isCapturing: boolean;
 }
@@ -14,17 +15,22 @@ export function NetworkDashboard({ isCapturing }: NetworkDashboardProps) {
     packets_per_second: 0,
     bytes_per_second: 0,
     total_packets: 0,
-    total_bytes: 0,
     uptime_seconds: 0,
   });
+  const[num_alerts, setNumAlerts] = useState(0);
+
 
   useEffect(() => {
-    let unlisten: UnlistenFn | undefined;
+    let unlistenStats: UnlistenFn | undefined;
+    let unlistenNumberAlerts: UnlistenFn | undefined;
 
-    const setupListener = async () => {
+    const setupListeners = async () => {
       try {
-        unlisten = await listen<NetworkStats>('network-stats', (event: Event<NetworkStats>) => {
-          setStats(event.payload); // Update all stats at once
+        unlistenStats = await listen<NetworkStats>('network-stats', (event: Event<NetworkStats>) => {
+          setStats(event.payload); // Update stats
+        });
+        unlistenNumberAlerts = await listen<number>('num_alerts', (event: Event<number> ) =>{
+          setNumAlerts(event.payload);
         });
       } catch (error) {
         console.error('Failed to setup listener:', error);
@@ -32,7 +38,7 @@ export function NetworkDashboard({ isCapturing }: NetworkDashboardProps) {
     };
 
     if (isCapturing) {
-      setupListener();
+      setupListeners();
     } else {
       // Reset all stats when not capturing
       setStats({
@@ -40,13 +46,13 @@ export function NetworkDashboard({ isCapturing }: NetworkDashboardProps) {
         packets_per_second: 0,
         bytes_per_second: 0,
         total_packets: 0,
-        total_bytes: 0,
         uptime_seconds: 0,
       });
     }
 
     return () => {
-      if (unlisten) unlisten();
+      if (unlistenStats) unlistenStats();
+      if (unlistenNumberAlerts) unlistenNumberAlerts();
     };
   }, [isCapturing]);
 
@@ -137,7 +143,7 @@ export function NetworkDashboard({ isCapturing }: NetworkDashboardProps) {
           style={{ '--kpi-color': kpiColor('var(--color-warning)') } as React.CSSProperties}
         >
           <div className="kpi-header">
-            <span className="kpi-label">Total Packets</span>
+            <span className="kpi-label">Total Packets Processed</span>
           </div>
           <div className="kpi-value-container">
             <span className="kpi-value">{stats.total_packets.toLocaleString()}</span>
@@ -149,10 +155,10 @@ export function NetworkDashboard({ isCapturing }: NetworkDashboardProps) {
           style={{ '--kpi-color': kpiColor('var(--color-danger)') } as React.CSSProperties}
         >
           <div className="kpi-header">
-            <span className="kpi-label">Total Data</span>
+            <span className="kpi-label">Num Alerts</span>
           </div>
           <div className="kpi-value-container">
-            <span className="kpi-value">{formatBytes(stats.total_bytes)}</span>
+            <span className="kpi-value">{num_alerts.toLocaleString()}</span>
           </div>
         </div>
 
