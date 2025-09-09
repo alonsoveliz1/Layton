@@ -831,7 +831,7 @@ impl FlowRecord {
             FlowDirection::Forward => {
                 self.total_fwd_bytes += payload_size as u64;
                 self.fwd_header_len += header_len;
-                self.fwd_segment_size_tot += payload_size;
+                self.fwd_segment_size_tot += payload_size as f64;
 
                 // Track minimum segment size for forward direction
                 if payload_size > 0 {
@@ -850,7 +850,7 @@ impl FlowRecord {
             FlowDirection::Backward => {
                 self.total_bwd_bytes += payload_size as u64;
                 self.bwd_header_len += header_len;
-                self.bwd_segment_size_tot += payload_size;
+                self.bwd_segment_size_tot += payload_size as f64;
 
                 // Initialize window size on first backward packet
                 if self.total_bwd_packets == 1 {
