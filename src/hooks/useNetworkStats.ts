@@ -6,11 +6,11 @@ import type { NetworkStats } from "../types/network.types";
 export function useNetworkStats(active: boolean) {
   const [stats, setStats] = useState<NetworkStats>({
     flow_count: 0, packets_per_second: 0, bytes_per_second: 0,
-    total_packets: 0, total_bytes: 0, uptime_seconds: 0,
+    total_packets: 0, uptime_seconds: 0,
   });
 
   useEffect(() => {
-    if (!active) { setStats({ flow_count:0, packets_per_second:0, bytes_per_second:0, total_packets:0, total_bytes:0, uptime_seconds:0 }); return; }
+    if (!active) { setStats({ flow_count:0, packets_per_second:0, bytes_per_second:0, total_packets:0, uptime_seconds:0 }); return; }
     let unlisten: UnlistenFn | undefined;
     const latest = { current: stats };
     let tick: number | undefined;
