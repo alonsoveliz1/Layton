@@ -68,15 +68,6 @@ export function NetworkDashboard({ isCapturing }: NetworkDashboardProps) {
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Format bytes to human readable
-  const formatBytes = (bytes: number): string => {
-    if (bytes === 0) return '0';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
-  };
-
   // Format bandwidth (bytes/sec to appropriate unit)
   const formatBandwidth = (bytesPerSec: number): { value: string; unit: string } => {
     if (bytesPerSec === 0) return { value: '0', unit: 'KB/s' };
