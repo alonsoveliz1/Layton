@@ -11,6 +11,5 @@ export interface NetworkStats{
     packets_per_second: number,
     bytes_per_second: number,
     total_packets: number,
-    num_alerts: number,
     uptime_seconds: number,
 }
