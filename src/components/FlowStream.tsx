@@ -133,13 +133,14 @@ export function FlowStream({ active, maxRows = 2000 }: { active: boolean; maxRow
         <div className="thead">
           <div>Class</div>
           <div>P(attack)</div>
+          <div>P(class)</div>
           <div>Pkts</div>
           <div>Bytes</div>
           <div>Duration</div>
           <div>Flow</div>
         </div>
         <div className="tbody" style={{ maxHeight: 480, overflow: "auto" }}>
-          {filtered.map((r) => {
+          {[...filtered].reverse().map((r) => {
             const id = flowId(r);
             return (
               <div className="trow" key={id}>
@@ -147,6 +148,7 @@ export function FlowStream({ active, maxRows = 2000 }: { active: boolean; maxRow
                   {r.multi_label ?? (r.is_attack ? "Attack" : "Benign")}
                 </div>
                 <div>{r.p_attack.toFixed(2)}</div>
+                <div>{r.multi_probs ? Math.max(...r.multi_probs).toFixed(2) : "N/A"}</div>
                 <div>{r.total_packets}</div>
                 <div>{fmtBytes(r.total_bytes)}</div>
                 <div>{fmtTimeUs(r.duration_us)}</div>
