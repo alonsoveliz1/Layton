@@ -7,6 +7,8 @@ interface HeaderProps {
     loading: boolean;
     onToggleModal: () => void;
     onToggleCapture: () => void;
+    isExporting: boolean;
+    onToggleExport: () => void;
 }
 
 export function AppHeader({
@@ -15,7 +17,9 @@ export function AppHeader({
     isCapturing,
     loading,
     onToggleModal,
-    onToggleCapture
+    onToggleCapture,
+    isExporting,
+    onToggleExport,
 }: HeaderProps){
     return (
     <header className="header">
@@ -24,6 +28,15 @@ export function AppHeader({
             <h3>Layton ver: 1.0.0</h3>
         </div>
     
+        <div className="header-controls">
+            <button 
+                className={`btn ${isExporting ? 'btn-danger' : 'btn-success'}`}
+                disabled={!selectedInterface || isCapturing}
+                onClick={onToggleExport}
+                >
+                {isExporting ? 'Stop traffic collection' : 'Export Traffic to CSV'}
+            </button>
+        </div>
         <div className="header-controls">
             <button 
                 className={`btn ${showModal ? 'btn-selected' : 'btn-primary'}`}
@@ -35,7 +48,7 @@ export function AppHeader({
         
             <button 
                 className={`btn ${isCapturing ? 'btn-danger' : 'btn-success'}`}
-                disabled={!selectedInterface}
+                disabled={!selectedInterface || isExporting}
                 onClick={onToggleCapture}
             >
                 {isCapturing ? 'Stop Capture' : 'Start Capture'}
