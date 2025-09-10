@@ -48,6 +48,7 @@ export function NetworkDashboard({ isCapturing }: NetworkDashboardProps) {
         total_packets: 0,
         uptime_seconds: 0,
       });
+      setNumAlerts(0);
     }
 
     return () => {
