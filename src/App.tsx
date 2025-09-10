@@ -5,6 +5,7 @@ import { InterfaceModal } from "./components/InterfaceModal";
 import { NetworkDashboard } from "./components/NetworkDashboard";
 import { useInterfaces } from "./hooks/useInterfaces";
 import { useCapture } from "./hooks/useCapture";
+import { useExport } from "./hooks/useExport";
 
 import "./styles/global.css";
 import "./styles/components.css"; 
@@ -13,6 +14,7 @@ import "./styles/dashboard.css";
 export default function App() {
   const { list, selected, loading, error, refresh, select, setError } = useInterfaces();
   const { isCapturing, toggle } = useCapture();
+  const { isExporting, exportToggle} = useExport();
   const [showModal, setShowModal] = useState(false);
 
   const onToggleModal = () => setShowModal(prev => {
@@ -30,6 +32,8 @@ export default function App() {
         loading={loading}
         onToggleModal={onToggleModal}
         onToggleCapture={() => toggle(selected, (m)=>setError(m))}
+        isExporting={isExporting}
+        onToggleExport={() => exportToggle(selected, (m)=>setError(m))}
       />
 
       {showModal && (
