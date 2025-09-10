@@ -13,7 +13,7 @@ use crate::types::NetworkStats;
 use super::{engine, publisher};
 
 pub struct FeatureProcessor {
-    running: Arc<AtomicBool>,
+    pub running: Arc<AtomicBool>,
     processing_thread: Option<JoinHandle<()>>,
     publisher_thread: Option<JoinHandle<()>>,
     packet_tx: Sender<ParsedPacket>,
@@ -73,5 +73,40 @@ impl FeatureProcessor {
         if let Some(h) = self.processing_thread.take() { let _ = h.join(); }
         if let Some(h) = self.publisher_thread.take() { let _ = h.join(); }
         Ok(())
+    }
+
+    pub fn start_processor_baseline(
+        &mut self, 
+        app: AppHandle, 
+        csv_tx: Sender<FlowRecord>
+    ) -> Result<(), Box<dyn Error>> {
+        if self.running.load(Ordering::Relaxed) {
+            return Err("Processor is already running".into());
+        }
+        self.running.store(true, Ordering::Relaxed);
+
+        let processing = {
+            let running = self.running.clone();
+            let rx = self.packet_rx.clone();
+            let stats_tx = self.stats_tx.clone();
+            thread::spawn(move || engine::processing_loop(running, rx, stats_tx, csv_tx))
+        };
+
+        let publisher = {
+            let running = self.running.clone();
+            let stats_rx = self.stats_rx.clone();
+            let app = app.clone();
+            thread::spawn(move || publisher::publisher_loop(running, stats_rx, app))
+        };
+
+        self.processing_thread = Some(processing);
+        self.publisher_thread = Some(publisher);
+        Ok(())
+    }
+    
+    // Expose running flag for CSV writer
+    pub fn get_running_flag(&self) -> Arc<AtomicBool> {
+        self.running.clone()
+    
     }
 }
