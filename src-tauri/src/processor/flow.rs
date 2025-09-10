@@ -550,7 +550,7 @@ impl FlowRecord {
                         self.fwd_iat_total += fwd_iat;
 
                         self.fwd_iat_min = self.fwd_iat_min.min(fwd_iat);
-                        self.fwd_iat_max = self.fwd_iat_max.min(fwd_iat);
+                        self.fwd_iat_max = self.fwd_iat_max.max(fwd_iat);
 
                         let n_fwd = self.total_fwd_packets as f64;
                         if n_fwd > 1.0 {
@@ -963,4 +963,111 @@ impl FlowRecord {
             self.finalize_bwd_bulk();
         }
     }
+
+
+
+    pub fn to_csv_row(&self) -> String {
+        format!(
+            "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}",
+            self.flow_duration,
+            self.total_fwd_packets,
+            self.total_bwd_packets,
+            self.total_fwd_bytes,
+            self.total_bwd_bytes,
+            self.fwd_packet_len_min,
+            self.fwd_packet_len_max,
+            self.fwd_packet_len_mean,
+            self.fwd_packet_len_std,
+            self.bwd_packet_len_min,
+            self.bwd_packet_len_max,
+            self.bwd_packet_len_mean,
+            self.bwd_packet_len_std,
+            self.flow_bytes_per_sec,
+            self.flow_packets_per_sec,
+            self.flow_iat_mean,
+            self.flow_iat_std,
+            self.flow_iat_max,
+            self.flow_iat_min,
+            self.fwd_iat_min,
+            self.fwd_iat_max,
+            self.fwd_iat_mean,
+            self.fwd_iat_std,
+            self.fwd_iat_total,
+            self.bwd_iat_min,
+            self.bwd_iat_max,
+            self.bwd_iat_mean,
+            self.bwd_iat_std,
+            self.bwd_iat_total,
+            self.fwd_psh_flags,
+            self.bwd_psh_flags,
+            self.fwd_urg_flags,
+            self.bwd_urg_flags,
+            self.fwd_header_len,
+            self.bwd_header_len,
+            self.fwd_packets_per_sec,
+            self.bwd_packets_per_sec,
+            self.packet_len_min,
+            self.packet_len_max,
+            self.packet_len_mean,
+            self.packet_len_std,
+            self.packet_len_variance,
+            self.fin_flag_count,
+            self.syn_flag_count,
+            self.rst_flag_count,
+            self.psh_flag_count,
+            self.ack_flag_count,
+            self.urg_flag_count,
+            self.cwr_flag_count,
+            self.ece_flag_count,
+            self.down_up_ratio,
+            self.avg_packet_size,
+            self.fwd_segment_size_avg,
+            self.bwd_segment_size_avg,
+            self.fwd_bytes_bulk_avg,
+            self.fwd_packet_bulk_avg,
+            self.fwd_bulk_rate_avg,
+            self.bwd_bytes_bulk_avg,
+            self.bwd_packet_bulk_avg,
+            self.bwd_bulk_rate_avg,
+            self.subflow_fwd_packets,
+            self.subflow_fwd_bytes,
+            self.subflow_bwd_packets,
+            self.subflow_bwd_bytes,
+            self.fwd_init_win_bytes,
+            self.bwd_init_win_bytes,
+            self.fwd_act_data_packets,
+            self.fwd_seg_size_min,
+            self.active_min,
+            self.active_mean,
+            self.active_max,
+            self.active_std,
+            self.idle_min,
+            self.idle_mean,
+            self.idle_max,
+            self.idle_std
+        )
+    }
+
+
+
+    pub fn csv_header() -> &'static str {
+        "Flow Duration,Total Fwd Packet,Total Bwd packets,Total Length of Fwd Packet,\
+        Total Length of Bwd Packet,Fwd Packet Length Min,Fwd Packet Length Max,\
+        Fwd Packet Length Mean,Fwd Packet Length Std,Bwd Packet Length Min,\
+        Bwd Packet Length Max,Bwd Packet Length Mean,Bwd Packet Length Std,\
+        Flow Bytes/s,Flow Packets/s,Flow IAT Mean,Flow IAT Std,Flow IAT Max,\
+        Flow IAT Min,Fwd IAT Min,Fwd IAT Max,Fwd IAT Mean,Fwd IAT Std,Fwd IAT Total,\
+        Bwd IAT Min,Bwd IAT Max,Bwd IAT Mean,Bwd IAT Std,Bwd IAT Total,Fwd PSH Flags,\
+        Bwd PSH Flags,Fwd URG Flags,Bwd URG Flags,Fwd Header Length,Bwd Header Length,\
+        Fwd Packets/s,Bwd Packets/s,Packet Length Min,Packet Length Max,Packet Length Mean,\
+        Packet Length Std,Packet Length Variance,FIN Flag Count,SYN Flag Count,\
+        RST Flag Count,PSH Flag Count,ACK Flag Count,URG Flag Count,CWR Flag Count,\
+        ECE Flag Count,Down/Up Ratio,Average Packet Size,Fwd Segment Size Avg,\
+        Bwd Segment Size Avg,Fwd Bytes/Bulk Avg,Fwd Packet/Bulk Avg,Fwd Bulk Rate Avg,\
+        Bwd Bytes/Bulk Avg,Bwd Packet/Bulk Avg,Bwd Bulk Rate Avg,Subflow Fwd Packets,\
+        Subflow Fwd Bytes,Subflow Bwd Packets,Subflow Bwd Bytes,Fwd Init Win bytes,\
+        Bwd Init Win bytes,Fwd Act Data Pkts,Fwd Seg Size Min,Active Min,Active Mean,\
+        Active Max,Active Std,Idle Min,Idle Mean,Idle Max,Idle Std"
+    }
+
 }
